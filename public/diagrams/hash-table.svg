@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" fill="none">
+  <style>
+    text { font-family: 'JetBrains Mono', 'Fira Code', monospace; fill: #e8e6f0; }
+    .label { font-size: 11px; fill: #8b89a0; }
+    .idx { font-size: 12px; fill: #5c5a70; font-weight: 600; }
+    .value { font-size: 11px; fill: #e8e6f0; }
+    .bucket { stroke: #6c63ff; stroke-width: 1.5; fill: #16162a; rx: 3; }
+    .entry { stroke: #4ecdc4; stroke-width: 1; fill: #1a2a2a; rx: 4; }
+    .collision { stroke: #ff6b6b; stroke-width: 1; fill: #2a1a1a; rx: 4; }
+    .arrow { stroke: #8b89a0; stroke-width: 1; fill: none; marker-end: url(#ah); }
+    .null { font-size: 10px; fill: #5c5a70; font-style: italic; }
+    .note { font-size: 10px; fill: #ff6b6b; }
+  </style>
+  <defs>
+    <marker id="ah" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#8b89a0"/>
+    </marker>
+  </defs>
+  <text x="50" y="20" class="label">Buckets</text>
+  <!-- Bucket 0 -->
+  <rect x="20" y="30" width="60" height="30" class="bucket"/><text x="50" y="50" class="idx" text-anchor="middle">0</text>
+  <line x1="80" y1="45" x2="120" y2="45" class="arrow"/>
+  <text x="140" y="49" class="null">null</text>
+  <!-- Bucket 1 -->
+  <rect x="20" y="65" width="60" height="30" class="bucket"/><text x="50" y="85" class="idx" text-anchor="middle">1</text>
+  <line x1="80" y1="80" x2="120" y2="80" class="arrow"/>
+  <rect x="125" y="65" width="120" height="30" class="entry"/>
+  <text x="185" y="84" class="value" text-anchor="middle">"bob": 42</text>
+  <!-- Bucket 2 -->
+  <rect x="20" y="100" width="60" height="30" class="bucket"/><text x="50" y="120" class="idx" text-anchor="middle">2</text>
+  <line x1="80" y1="115" x2="120" y2="115" class="arrow"/>
+  <text x="140" y="119" class="null">null</text>
+  <!-- Bucket 3 - collision chain -->
+  <rect x="20" y="135" width="60" height="30" class="bucket"/><text x="50" y="155" class="idx" text-anchor="middle">3</text>
+  <line x1="80" y1="150" x2="120" y2="150" class="arrow"/>
+  <rect x="125" y="135" width="120" height="30" class="collision"/>
+  <text x="185" y="154" class="value" text-anchor="middle">"dave": 10</text>
+  <line x1="245" y1="150" x2="275" y2="150" class="arrow"/>
+  <rect x="280" y="135" width="120" height="30" class="collision"/>
+  <text x="340" y="154" class="value" text-anchor="middle">"eve": 7</text>
+  <text x="430" y="154" class="note">← collision</text>
+  <!-- Bucket 4-5 -->
+  <rect x="20" y="170" width="60" height="30" class="bucket"/><text x="50" y="190" class="idx" text-anchor="middle">4</text>
+  <line x1="80" y1="185" x2="120" y2="185" class="arrow"/><text x="140" y="189" class="null">null</text>
+  <rect x="20" y="205" width="60" height="30" class="bucket"/><text x="50" y="225" class="idx" text-anchor="middle">5</text>
+  <line x1="80" y1="220" x2="120" y2="220" class="arrow"/><text x="140" y="224" class="null">null</text>
+  <!-- Bucket 6 -->
+  <rect x="20" y="240" width="60" height="30" class="bucket"/><text x="50" y="260" class="idx" text-anchor="middle">6</text>
+  <line x1="80" y1="255" x2="120" y2="255" class="arrow"/>
+  <rect x="125" y="240" width="120" height="30" class="entry"/>
+  <text x="185" y="259" class="value" text-anchor="middle">"alice": 99</text>
+  <!-- Bucket 7 -->
+  <rect x="20" y="275" width="60" height="30" class="bucket"/><text x="50" y="295" class="idx" text-anchor="middle">7</text>
+  <line x1="80" y1="290" x2="120" y2="290" class="arrow"/>
+  <rect x="125" y="275" width="120" height="30" class="entry"/>
+  <text x="185" y="294" class="value" text-anchor="middle">"carol": 55</text>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 220" fill="none">
+  <style>
+    text { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+    .node { stroke: #6c63ff; stroke-width: 2; fill: #16162a; }
+    .val { font-size: 14px; fill: #e8e6f0; font-weight: 600; }
+    .edge { stroke: #8b89a0; stroke-width: 1.5; }
+    .label { font-size: 10px; fill: #5c5a70; }
+    .highlight { stroke: #4ecdc4; stroke-width: 2; fill: #1a2a2a; }
+  </style>
+  <!-- Edges -->
+  <line x1="220" y1="45" x2="120" y2="95" class="edge"/>
+  <line x1="220" y1="45" x2="320" y2="95" class="edge"/>
+  <line x1="120" y1="115" x2="60" y2="165" class="edge"/>
+  <line x1="120" y1="115" x2="180" y2="165" class="edge"/>
+  <line x1="320" y1="115" x2="280" y2="165" class="edge"/>
+  <line x1="320" y1="115" x2="380" y2="165" class="edge"/>
+  <!-- Root -->
+  <circle cx="220" cy="40" r="22" class="highlight"/>
+  <text x="220" y="46" class="val" text-anchor="middle">8</text>
+  <text x="220" y="12" class="label" text-anchor="middle">root</text>
+  <!-- Level 1 -->
+  <circle cx="120" cy="110" r="22" class="node"/>
+  <text x="120" y="116" class="val" text-anchor="middle">3</text>
+  <circle cx="320" cy="110" r="22" class="node"/>
+  <text x="320" y="116" class="val" text-anchor="middle">10</text>
+  <!-- Level 2 -->
+  <circle cx="60" cy="180" r="22" class="node"/>
+  <text x="60" y="186" class="val" text-anchor="middle">1</text>
+  <circle cx="180" cy="180" r="22" class="node"/>
+  <text x="180" y="186" class="val" text-anchor="middle">6</text>
+  <circle cx="280" cy="180" r="22" class="node"/>
+  <text x="280" y="186" class="val" text-anchor="middle">9</text>
+  <circle cx="380" cy="180" r="22" class="node"/>
+  <text x="380" y="186" class="val" text-anchor="middle">14</text>
+  <!-- BST property labels -->
+  <text x="80" y="76" class="label">left &lt; parent</text>
+  <text x="290" y="76" class="label">right &gt; parent</text>
+</svg>

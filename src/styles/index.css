@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface-0: #0a0a12;
+  --color-surface-1: #10101e;
+  --color-surface-2: #16162a;
+  --color-surface-3: #1e1e36;
+  --color-surface-4: #262642;
+
+  --color-accent: #6c63ff;
+  --color-accent-hover: #7c74ff;
+  --color-accent-muted: #6c63ff20;
+
+  --color-mint: #4ecdc4;
+  --color-mint-muted: #4ecdc420;
+
+  --color-coral: #ff6b6b;
+  --color-coral-muted: #ff6b6b20;
+
+  --color-gold: #ffd93d;
+  --color-gold-muted: #ffd93d20;
+
+  --color-text: #e8e6f0;
+  --color-text-muted: #8b89a0;
+  --color-text-dim: #5c5a70;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #262642 transparent;
+}
+
+::selection {
+  background: #6c63ff40;
+}
+
+/* Highlight.js theme overrides */
+.hljs {
+  background: #0d0d1a !important;
+  color: #e8e6f0;
+}
+.hljs-keyword { color: #c792ea; }
+.hljs-string { color: #c3e88d; }
+.hljs-number { color: #f78c6c; }
+.hljs-comment { color: #5c5a70; font-style: italic; }
+.hljs-class .hljs-title,
+.hljs-function .hljs-title { color: #82aaff; }
+.hljs-built_in { color: #ffcb6b; }
+.hljs-type { color: #4ecdc4; }
+.hljs-attr { color: #ffcb6b; }
+.hljs-literal { color: #f78c6c; }
+.hljs-params { color: #e8e6f0; }
+.hljs-meta { color: #8b89a0; }
+.hljs-title.function_ { color: #82aaff; }
+.hljs-title.class_ { color: #4ecdc4; }
+.hljs-variable { color: #e8e6f0; }
+.hljs-property { color: #e8e6f0; }
+
+/* Command palette styles */
+[cmdk-overlay] {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+[cmdk-dialog] {
+  background: #16162a;
+  border: 1px solid #1e1e36;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+[cmdk-input] {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e8e6f0;
+  font-size: 1rem;
+  width: 100%;
+  padding: 12px 16px;
+}
+
+[cmdk-item] {
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #e8e6f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+[cmdk-item][data-selected="true"] {
+  background: #6c63ff20;
+  color: #6c63ff;
+}
+
+[cmdk-group-heading] {
+  padding: 8px 16px 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5c5a70;
+}
+
+[cmdk-separator] {
+  height: 1px;
+  background: #1e1e36;
+  margin: 4px 0;
+}
+
+[cmdk-empty] {
+  padding: 24px;
+  text-align: center;
+  color: #5c5a70;
+}
+
+/* Details/Summary for collapsible sections (project solutions) */
+details {
+  margin: 1rem 0;
+  border: 1px solid #1e1e36;
+  border-radius: 8px;
+  background: #10101e;
+  overflow: hidden;
+}
+
+details summary {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #ffd93d;
+  background: #16162a;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+details summary::before {
+  content: '▶';
+  font-size: 0.75em;
+  transition: transform 0.2s;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details > *:not(summary) {
+  padding: 0 16px;
+}
+
+details > *:last-child {
+  padding-bottom: 16px;
+}

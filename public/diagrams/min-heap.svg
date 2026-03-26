@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" fill="none">
+  <style>
+    text { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+    .node { stroke: #6c63ff; stroke-width: 2; fill: #16162a; }
+    .root { stroke: #4ecdc4; stroke-width: 2; fill: #1a2a2a; }
+    .val { font-size: 14px; fill: #e8e6f0; font-weight: 600; }
+    .edge { stroke: #8b89a0; stroke-width: 1.5; }
+    .label { font-size: 10px; fill: #5c5a70; }
+    .arr { font-size: 11px; fill: #8b89a0; }
+    .arr-box { stroke: #6c63ff; stroke-width: 1; fill: #16162a; rx: 2; }
+    .arr-val { font-size: 12px; fill: #e8e6f0; font-weight: 600; }
+    .idx { font-size: 9px; fill: #5c5a70; }
+  </style>
+  <!-- Edges -->
+  <line x1="200" y1="38" x2="110" y2="82" class="edge"/>
+  <line x1="200" y1="38" x2="290" y2="82" class="edge"/>
+  <line x1="110" y1="102" x2="60" y2="148" class="edge"/>
+  <line x1="110" y1="102" x2="160" y2="148" class="edge"/>
+  <line x1="290" y1="102" x2="240" y2="148" class="edge"/>
+  <!-- Root: 1 (min) -->
+  <circle cx="200" cy="32" r="20" class="root"/>
+  <text x="200" y="38" class="val" text-anchor="middle">1</text>
+  <text x="200" y="8" class="label" text-anchor="middle">min</text>
+  <!-- Level 1 -->
+  <circle cx="110" cy="96" r="20" class="node"/>
+  <text x="110" y="102" class="val" text-anchor="middle">3</text>
+  <circle cx="290" cy="96" r="20" class="node"/>
+  <text x="290" y="102" class="val" text-anchor="middle">5</text>
+  <!-- Level 2 -->
+  <circle cx="60" cy="160" r="20" class="node"/>
+  <text x="60" y="166" class="val" text-anchor="middle">7</text>
+  <circle cx="160" cy="160" r="20" class="node"/>
+  <text x="160" y="166" class="val" text-anchor="middle">9</text>
+  <circle cx="240" cy="160" r="20" class="node"/>
+  <text x="240" y="166" class="val" text-anchor="middle">8</text>
+  <!-- Array representation -->
+  <text x="20" y="210" class="arr">Array: </text>
+  <rect x="70" y="196" width="40" height="26" class="arr-box"/><text x="90" y="214" class="arr-val" text-anchor="middle">1</text>
+  <rect x="110" y="196" width="40" height="26" class="arr-box"/><text x="130" y="214" class="arr-val" text-anchor="middle">3</text>
+  <rect x="150" y="196" width="40" height="26" class="arr-box"/><text x="170" y="214" class="arr-val" text-anchor="middle">5</text>
+  <rect x="190" y="196" width="40" height="26" class="arr-box"/><text x="210" y="214" class="arr-val" text-anchor="middle">7</text>
+  <rect x="230" y="196" width="40" height="26" class="arr-box"/><text x="250" y="214" class="arr-val" text-anchor="middle">9</text>
+  <rect x="270" y="196" width="40" height="26" class="arr-box"/><text x="290" y="214" class="arr-val" text-anchor="middle">8</text>
+  <text x="90" y="238" class="idx" text-anchor="middle">[0]</text>
+  <text x="130" y="238" class="idx" text-anchor="middle">[1]</text>
+  <text x="170" y="238" class="idx" text-anchor="middle">[2]</text>
+  <text x="210" y="238" class="idx" text-anchor="middle">[3]</text>
+  <text x="250" y="238" class="idx" text-anchor="middle">[4]</text>
+  <text x="290" y="238" class="idx" text-anchor="middle">[5]</text>
+</svg>
