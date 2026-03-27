@@ -87,13 +87,8 @@ export function Sidebar() {
   const { slug } = useParams();
   const { sidebarOpen, completedPages } = useStore();
   const [search, setSearch] = useState('');
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
-    // Start with non-DSA sections expanded, DSA collapsed
-    return new Set(sections.filter((s) => !s.title.startsWith('DSA:')).map((s) => s.slug));
-  });
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
-    return new Set(chapterGroups.map((g) => g.label));
-  });
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   const fuse = useMemo(
     () => new Fuse(allPages, { keys: ['title', 'content'], threshold: 0.4, ignoreLocation: true }),
