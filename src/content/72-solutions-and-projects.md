@@ -1,373 +1,227 @@
-# Solutions and Projects Workflow
+# Solutions and Projects in Visual Studio
 
-In .NET, **solutions** group related **projects** together. Understanding how to structure
-and manage them from the command line is essential for professional C# development. This
-lesson walks through the entire workflow, from creating a blank solution to building a
-layered multi-project architecture.
+In .NET, **solutions** group related **projects** together. Understanding how to structure and manage them — both from Visual Studio 2026 and the command line — is essential for professional C# development. This lesson walks through the entire workflow from creating a blank solution to building a layered multi-project architecture.
 
 ---
 
 ## What Are .sln Files?
 
-A `.sln` (solution) file is a text-based manifest that lists all the projects in a
-codebase and their relationships. It is used by:
+A `.sln` (solution) file is a text-based manifest that lists all the projects in a codebase and their relationships. It is used by:
 
+- **Visual Studio 2026** to display the project tree in Solution Explorer
 - `dotnet build` / `dotnet test` to know which projects to compile
-- IDEs (Visual Studio, Rider, VS Code) to display the project tree
 - CI pipelines to build everything in one command
 
-> **Note:** A `.sln` file does not contain code. It is metadata — a table of contents
-> for your projects.
-
-### Anatomy of a .sln File
+### Anatomy of a .sln file
 
 ```
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-...}") = "Api", "src\Api\Api.csproj", "{GUID}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-...}") = "MyApp", "src\MyApp\MyApp.csproj", "{GUID}"
 EndProject
-Project("{FAE04EC0-...}") = "Domain", "src\Domain\Domain.csproj", "{GUID}"
+Project("{FAE04EC0-...}") = "MyApp.Tests", "tests\MyApp.Tests\MyApp.Tests.csproj", "{GUID}"
 EndProject
-Global
-  GlobalSection(SolutionConfigurationPlatforms) = preSolution
-    Debug|Any CPU = Debug|Any CPU
-    Release|Any CPU = Release|Any CPU
-  EndGlobalSection
-EndGlobal
 ```
 
-You should never edit this file by hand. Use `dotnet sln` commands instead.
+You rarely edit this file by hand — Visual Studio and `dotnet sln` manage it for you.
 
 ---
 
-## Creating a Solution
+## Creating Solutions and Projects in Visual Studio
 
-```bash
-# Create a solution named after the current directory
-dotnet new sln
+### From the Start Window
 
-# Create a solution with a specific name
-dotnet new sln -n MyCompany.OrderSystem
+1. Open Visual Studio 2026
+2. Click **Create a new project**
+3. Search or filter by language (C#), platform (Windows), or project type
+4. Select a template (e.g., Console App, ASP.NET Core Web API)
+5. Configure: project name, location, solution name
+6. Choose framework (.NET 10) and click **Create**
 
-# Create in a specific directory
-dotnet new sln -n MyApp -o /path/to/project
-```
+### Adding Projects to an Existing Solution
 
----
+1. Right-click the **Solution** node in Solution Explorer
+2. **Add > New Project...** or **Add > Existing Project...**
+3. Choose template, configure, and create
 
-## Creating Projects
+### Adding Project References
 
-### Project Types
-
-| Type | Template | Use Case |
-|---|---|---|
-| Console App | `console` | CLI tools, background jobs |
-| Class Library | `classlib` | Shared logic, domain models |
-| Web API | `webapi` | REST APIs |
-| Worker Service | `worker` | Background services, message consumers |
-| xUnit Tests | `xunit` | Unit and integration tests |
-| NUnit Tests | `nunit` | Alternative test framework |
-| Blazor | `blazor` | Web UI |
-
-```bash
-# Create projects in a conventional directory structure
-dotnet new classlib -n Domain -o src/Domain
-dotnet new classlib -n Application -o src/Application
-dotnet new classlib -n Infrastructure -o src/Infrastructure
-dotnet new webapi -n Api -o src/Api
-dotnet new xunit -n Domain.Tests -o tests/Domain.Tests
-dotnet new xunit -n Application.Tests -o tests/Application.Tests
-dotnet new xunit -n Api.Tests -o tests/Api.Tests
-```
-
-> **Tip:** The `-o` flag controls the output directory. The `-n` flag controls the
-> project name and root namespace. Always use both for a clean folder structure.
+1. Right-click the project that needs the reference
+2. **Add > Project Reference...**
+3. Check the project(s) you want to reference
+4. Click **OK**
 
 ---
 
-## Adding and Removing Projects from the Solution
+## Creating Solutions and Projects from the CLI
 
-```bash
-# Add a single project
-dotnet sln add src/Domain/Domain.csproj
+The CLI approach is faster for experienced developers and essential for scripting.
 
-# Add multiple projects at once
-dotnet sln add src/Application/Application.csproj src/Infrastructure/Infrastructure.csproj
+```powershell
+# Create a solution
+dotnet new sln -n DataPipeline
 
-# Add all projects using a glob (bash)
-dotnet sln add src/**/*.csproj tests/**/*.csproj
+# Create projects
+dotnet new console -n DataPipeline.Cli -o src/DataPipeline.Cli
+dotnet new classlib -n DataPipeline.Core -o src/DataPipeline.Core
+dotnet new classlib -n DataPipeline.Data -o src/DataPipeline.Data
+dotnet new xunit -n DataPipeline.Tests -o tests/DataPipeline.Tests
 
-# Remove a project
-dotnet sln remove src/OldProject/OldProject.csproj
+# Add projects to the solution with folder organization
+dotnet sln add src/DataPipeline.Cli --solution-folder src
+dotnet sln add src/DataPipeline.Core --solution-folder src
+dotnet sln add src/DataPipeline.Data --solution-folder src
+dotnet sln add tests/DataPipeline.Tests --solution-folder tests
 
-# List all projects in the solution
-dotnet sln list
+# Add project references
+dotnet add src/DataPipeline.Cli reference src/DataPipeline.Core
+dotnet add src/DataPipeline.Cli reference src/DataPipeline.Data
+dotnet add src/DataPipeline.Data reference src/DataPipeline.Core
+dotnet add tests/DataPipeline.Tests reference src/DataPipeline.Core
 ```
 
-Example output of `dotnet sln list`:
-
-```
-Project(s)
-----------
-src/Domain/Domain.csproj
-src/Application/Application.csproj
-src/Infrastructure/Infrastructure.csproj
-src/Api/Api.csproj
-tests/Domain.Tests/Domain.Tests.csproj
-tests/Application.Tests/Application.Tests.csproj
-tests/Api.Tests/Api.Tests.csproj
-```
+After running these commands, open the `.sln` file in Visual Studio — it will display the full project tree.
 
 ---
 
-## Project References
+## Recommended Directory Structure
 
-Project references tell the build system that one project depends on another.
-
-```bash
-# Application depends on Domain
-dotnet add src/Application/Application.csproj reference src/Domain/Domain.csproj
-
-# Infrastructure depends on Application (which transitively includes Domain)
-dotnet add src/Infrastructure/Infrastructure.csproj reference src/Application/Application.csproj
-
-# Api depends on Infrastructure
-dotnet add src/Api/Api.csproj reference src/Infrastructure/Infrastructure.csproj
-
-# Test projects reference what they test
-dotnet add tests/Domain.Tests/Domain.Tests.csproj reference src/Domain/Domain.csproj
-dotnet add tests/Application.Tests/Application.Tests.csproj reference src/Application/Application.csproj
-
-# List references for a project
-dotnet list src/Api/Api.csproj reference
-
-# Remove a reference
-dotnet remove src/Api/Api.csproj reference src/OldProject/OldProject.csproj
+```
+DataPipeline/
+├── DataPipeline.sln
+├── global.json
+├── .editorconfig
+├── Directory.Build.props          # shared MSBuild properties
+├── src/
+│   ├── DataPipeline.Cli/
+│   │   ├── DataPipeline.Cli.csproj
+│   │   └── Program.cs
+│   ├── DataPipeline.Core/
+│   │   ├── DataPipeline.Core.csproj
+│   │   ├── Models/
+│   │   └── Interfaces/
+│   └── DataPipeline.Data/
+│       ├── DataPipeline.Data.csproj
+│       └── Repositories/
+└── tests/
+    └── DataPipeline.Tests/
+        ├── DataPipeline.Tests.csproj
+        └── CoreTests/
 ```
 
-This generates `<ProjectReference>` entries in the `.csproj`:
+### Why this layout works
 
-```xml
-<ItemGroup>
-  <ProjectReference Include="..\Domain\Domain.csproj" />
-</ItemGroup>
-```
-
-> **Important:** Project references are transitive. If `Api -> Infrastructure -> Application -> Domain`,
-> then `Api` can use types from all three. However, you should only reference what you
-> directly use to keep dependencies explicit.
+- **src/ and tests/** separate production code from test code
+- **One project per concern** (CLI entry point, core logic, data access)
+- **Solution folders** in VS match the file system folders
+- The solution file sits at the root, so `dotnet build` from root builds everything
 
 ---
 
-## Directory.Build.props — Shared Build Settings
+## Understanding .csproj Files
 
-Place a `Directory.Build.props` file at the repository root to apply settings to every
-project in the tree. MSBuild automatically picks it up.
-
-```xml
-<!-- Directory.Build.props -->
-<Project>
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Company>MyCompany</Company>
-    <Authors>Engineering Team</Authors>
-  </PropertyGroup>
-</Project>
-```
-
-Now you can simplify each `.csproj` to just:
+The `.csproj` file defines a project's target framework, dependencies, and build settings.
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- TargetFramework, Nullable, etc. are inherited from Directory.Build.props -->
-</Project>
-```
 
-> **Tip:** If a project needs to override a setting, it can redeclare the property in its
-> own `.csproj`. The project-level value wins.
-
----
-
-## Directory.Packages.props — Centralized Package Versioning
-
-Central Package Management (CPM) lets you define all NuGet package versions in one place.
-
-### Enable CPM
-
-Create `Directory.Packages.props` at the repository root:
-
-```xml
-<!-- Directory.Packages.props -->
-<Project>
   <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-    <PackageVersion Include="Serilog" Version="4.2.0" />
-    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="FluentValidation" Version="11.11.0" />
-    <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <ProjectReference Include="..\DataPipeline.Core\DataPipeline.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.2.0" />
+  </ItemGroup>
+
 </Project>
 ```
 
-### Reference packages without versions in .csproj
+### Key elements
+
+| Element | Purpose |
+|---|---|
+| `Sdk` | Which SDK to use (`Microsoft.NET.Sdk`, `Microsoft.NET.Sdk.Web`, etc.) |
+| `TargetFramework` | .NET version to compile against |
+| `OutputType` | `Exe` for runnable apps, omit for libraries |
+| `Nullable` | Enable nullable reference types |
+| `ImplicitUsings` | Auto-import common namespaces |
+| `ProjectReference` | Dependency on another project in the solution |
+| `PackageReference` | NuGet dependency |
+
+### Editing .csproj in Visual Studio
+
+Double-click any project in Solution Explorer to open its `.csproj` directly in the editor. VS 2026 provides IntelliSense for MSBuild properties.
+
+---
+
+## Directory.Build.props — Shared Settings
+
+Place a `Directory.Build.props` file at the solution root to apply settings to every project automatically.
 
 ```xml
-<ItemGroup>
-  <PackageReference Include="Serilog" />
-  <PackageReference Include="FluentValidation" />
-</ItemGroup>
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>
 ```
 
-> **Warning:** With CPM enabled, specifying a `Version` attribute directly in a
-> `<PackageReference>` will cause a build error unless you also set
-> `VersionOverride="..."` explicitly. This is by design — it forces all versions
-> through the central file.
+With this in place, individual `.csproj` files can be much shorter — they inherit these defaults.
 
 ---
 
-## Practical Workflow: Building a Multi-Project Solution from Scratch
+## Solution Explorer Tips in Visual Studio
 
-Here is a complete shell session that creates a Clean Architecture solution.
+| Action | How |
+|---|---|
+| Search files | Ctrl+; in Solution Explorer |
+| Toggle file nesting | Solution Explorer toolbar > Nesting icon |
+| View file on disk | Right-click > Open Folder in File Explorer |
+| Scope to project | Double-click a project node |
+| Unload a project | Right-click > Unload Project (speeds up builds) |
+| Edit .csproj | Double-click the project node |
+| Manage NuGet | Right-click project > Manage NuGet Packages |
+| Add solution folder | Right-click solution > Add > New Solution Folder |
 
-```bash
-# Create the root directory
-mkdir -p OrderSystem && cd OrderSystem
+---
 
-# Initialize the solution
-dotnet new sln -n OrderSystem
+## Multi-Targeting
 
-# Scaffold supporting files
-dotnet new gitignore
-dotnet new editorconfig
+A single project can target multiple frameworks:
 
-# Create source projects
-dotnet new classlib -n OrderSystem.Domain -o src/Domain
-dotnet new classlib -n OrderSystem.Application -o src/Application
-dotnet new classlib -n OrderSystem.Infrastructure -o src/Infrastructure
-dotnet new webapi -n OrderSystem.Api -o src/Api
+```xml
+<PropertyGroup>
+  <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
+</PropertyGroup>
+```
 
-# Create test projects
-dotnet new xunit -n OrderSystem.Domain.Tests -o tests/Domain.Tests
-dotnet new xunit -n OrderSystem.Application.Tests -o tests/Application.Tests
-dotnet new xunit -n OrderSystem.Api.Tests -o tests/Api.Tests
+This is common for libraries that need to support older consumers.
 
-# Add all projects to the solution
-dotnet sln add src/Domain/OrderSystem.Domain.csproj
-dotnet sln add src/Application/OrderSystem.Application.csproj
-dotnet sln add src/Infrastructure/OrderSystem.Infrastructure.csproj
-dotnet sln add src/Api/OrderSystem.Api.csproj
-dotnet sln add tests/Domain.Tests/OrderSystem.Domain.Tests.csproj
-dotnet sln add tests/Application.Tests/OrderSystem.Application.Tests.csproj
-dotnet sln add tests/Api.Tests/OrderSystem.Api.Tests.csproj
+---
 
-# Set up project references (Clean Architecture layers)
-dotnet add src/Application/OrderSystem.Application.csproj \
-  reference src/Domain/OrderSystem.Domain.csproj
+## Build the Whole Solution
 
-dotnet add src/Infrastructure/OrderSystem.Infrastructure.csproj \
-  reference src/Application/OrderSystem.Application.csproj
-
-dotnet add src/Api/OrderSystem.Api.csproj \
-  reference src/Infrastructure/OrderSystem.Infrastructure.csproj
-
-# Test project references
-dotnet add tests/Domain.Tests/OrderSystem.Domain.Tests.csproj \
-  reference src/Domain/OrderSystem.Domain.csproj
-
-dotnet add tests/Application.Tests/OrderSystem.Application.Tests.csproj \
-  reference src/Application/OrderSystem.Application.csproj
-
-dotnet add tests/Api.Tests/OrderSystem.Api.Tests.csproj \
-  reference src/Api/OrderSystem.Api.csproj
-
-# Verify the solution
-dotnet sln list
-
-# Build everything
+```powershell
+# From the solution root
 dotnet build
 
-# Run all tests
-dotnet test
+# Or explicitly specify the solution
+dotnet build DataPipeline.sln
+
+# Build in Release mode
+dotnet build -c Release
 ```
 
-### Resulting Directory Structure
-
-```
-OrderSystem/
-├── OrderSystem.sln
-├── .gitignore
-├── .editorconfig
-├── Directory.Build.props          (create manually)
-├── Directory.Packages.props       (create manually)
-├── src/
-│   ├── Domain/
-│   │   └── OrderSystem.Domain.csproj
-│   ├── Application/
-│   │   └── OrderSystem.Application.csproj
-│   ├── Infrastructure/
-│   │   └── OrderSystem.Infrastructure.csproj
-│   └── Api/
-│       └── OrderSystem.Api.csproj
-└── tests/
-    ├── Domain.Tests/
-    │   └── OrderSystem.Domain.Tests.csproj
-    ├── Application.Tests/
-    │   └── OrderSystem.Application.Tests.csproj
-    └── Api.Tests/
-        └── OrderSystem.Api.Tests.csproj
-```
-
-> **Note:** The dependency flow is: `Api -> Infrastructure -> Application -> Domain`.
-> Domain has no outward dependencies — it is the core of the system.
-
----
-
-## Common Operations
-
-### Build only one project (and its dependencies)
-
-```bash
-dotnet build src/Api/OrderSystem.Api.csproj
-```
-
-### Run only the API project
-
-```bash
-dotnet run --project src/Api/OrderSystem.Api.csproj
-```
-
-### Run only domain tests
-
-```bash
-dotnet test tests/Domain.Tests/OrderSystem.Domain.Tests.csproj
-```
-
-### Add a NuGet package to a specific project
-
-```bash
-dotnet add src/Infrastructure/OrderSystem.Infrastructure.csproj \
-  package Microsoft.EntityFrameworkCore.Sqlite
-```
-
----
-
-## Summary
-
-- Every real-world .NET codebase uses a `.sln` file to group projects.
-- Use `dotnet sln add/remove/list` to manage the solution from the CLI.
-- Use `dotnet add reference` to wire up project dependencies.
-- Use `Directory.Build.props` to share build settings across all projects.
-- Use `Directory.Packages.props` to centralize NuGet versions.
-- Follow a layered folder structure (`src/` and `tests/`) for clarity.
+In Visual Studio: **Build > Build Solution** (Ctrl+Shift+B).

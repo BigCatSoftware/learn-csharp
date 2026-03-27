@@ -87,8 +87,8 @@ const sectionMeta: Record<string, string> = {
   '50': "What's New in C#", '51': "What's New in C#", '52': "What's New in C#", '53': "What's New in C#", '54': "What's New in C#", '55': "What's New in C#",
   '60': 'Data Engineering', '61': 'Data Engineering', '62': 'Data Engineering', '63': 'Data Engineering',
   '64': 'Data Engineering', '65': 'Data Engineering', '66': 'Data Engineering', '67': 'Data Engineering', '69': 'Data Engineering',
-  '70': '.NET on Ubuntu', '71': '.NET on Ubuntu', '72': '.NET on Ubuntu', '73': '.NET on Ubuntu',
-  '74': '.NET on Ubuntu', '75': '.NET on Ubuntu', '76': '.NET on Ubuntu', '77': '.NET on Ubuntu',
+  '70': '.NET on Windows', '71': '.NET on Windows', '72': '.NET on Windows', '73': '.NET on Windows',
+  '74': '.NET on Windows', '75': '.NET on Windows', '76': '.NET on Windows', '77': '.NET on Windows',
   // T-SQL for Data Engineers
   '120': 'T-SQL for Data Engineers', '121': 'T-SQL for Data Engineers', '122': 'T-SQL for Data Engineers',
   '123': 'T-SQL for Data Engineers', '124': 'T-SQL for Data Engineers', '125': 'T-SQL for Data Engineers',
@@ -296,8 +296,8 @@ function loadAllContent(): { sections: Section[]; allPages: Page[] } {
     'Data & LINQ', 'Async & Concurrency', 'Error Handling', 'Advanced C#', 'Performance & Memory',
     'Working with Data', 'Architecture & Patterns', 'Frameworks', 'Testing',
     "What's New in C#",
-    // .NET on Ubuntu
-    '.NET on Ubuntu',
+    // .NET on Windows
+    '.NET on Windows',
     // Database
     'T-SQL for Data Engineers', 'Oracle SQL for Data Engineers',
     // Data Access

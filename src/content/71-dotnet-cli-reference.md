@@ -1,8 +1,6 @@
 # The dotnet CLI — Complete Reference
 
-The `dotnet` command-line interface is the primary tool for creating, building, testing,
-and publishing .NET applications. This lesson is a comprehensive reference for every
-major command you will use daily.
+The `dotnet` command-line interface is the primary tool for creating, building, testing, and publishing .NET applications. Even when using Visual Studio 2026, understanding the CLI is essential — it powers the IDE under the hood and is indispensable for automation, CI/CD, and quick tasks.
 
 ---
 
@@ -14,386 +12,345 @@ major command you will use daily.
 | `dotnet build` | Compile the project | `dotnet build -c Release` |
 | `dotnet run` | Build and execute | `dotnet run -- --port 8080` |
 | `dotnet test` | Run unit tests | `dotnet test --filter "Category=Unit"` |
-| `dotnet publish` | Package for deployment | `dotnet publish -c Release -r linux-x64` |
-| `dotnet watch` | Rebuild on file changes | `dotnet watch run` |
-| `dotnet format` | Auto-format code | `dotnet format --verify-no-changes` |
-| `dotnet clean` | Remove build artifacts | `dotnet clean -c Release` |
-| `dotnet restore` | Restore NuGet packages | `dotnet restore --locked-mode` |
+| `dotnet publish` | Package for deployment | `dotnet publish -c Release` |
 | `dotnet add` | Add package or reference | `dotnet add package Serilog` |
-| `dotnet sln` | Manage solution files | `dotnet sln add src/Api/Api.csproj` |
-| `dotnet tool` | Manage .NET tools | `dotnet tool install -g dotnet-ef` |
+| `dotnet remove` | Remove package or reference | `dotnet remove package Serilog` |
+| `dotnet restore` | Restore NuGet packages | `dotnet restore` |
+| `dotnet clean` | Delete build outputs | `dotnet clean` |
+| `dotnet watch` | Hot-reload on file changes | `dotnet watch run` |
+| `dotnet tool` | Manage global/local tools | `dotnet tool install -g dotnet-ef` |
+| `dotnet sln` | Manage solution files | `dotnet sln add src/MyApp` |
+| `dotnet format` | Apply code style rules | `dotnet format` |
 
 ---
 
-## dotnet new — Scaffolding Projects
+## Creating Projects — `dotnet new`
 
-### Common Templates
+### Common templates
 
-| Template | Short Name | Command |
-|---|---|---|
-| Console Application | `console` | `dotnet new console -n MyApp` |
-| Class Library | `classlib` | `dotnet new classlib -n MyLib` |
-| ASP.NET Core Web API | `webapi` | `dotnet new webapi -n MyApi` |
-| ASP.NET Core MVC | `mvc` | `dotnet new mvc -n MyWeb` |
-| Worker Service | `worker` | `dotnet new worker -n MyWorker` |
-| xUnit Test Project | `xunit` | `dotnet new xunit -n MyTests` |
-| NUnit Test Project | `nunit` | `dotnet new nunit -n MyTests` |
-| Solution File | `sln` | `dotnet new sln -n MySolution` |
-| gitignore | `gitignore` | `dotnet new gitignore` |
-| EditorConfig | `editorconfig` | `dotnet new editorconfig` |
-| global.json | `globaljson` | `dotnet new globaljson --sdk-version 9.0.100` |
+```powershell
+# Console application
+dotnet new console -n MyApp
 
-### Useful Flags
+# Class library
+dotnet new classlib -n MyLib
 
-```bash
-# List all available templates
+# ASP.NET Core Web API
+dotnet new webapi -n MyApi
+
+# ASP.NET Core MVC
+dotnet new mvc -n MyWebApp
+
+# xUnit test project
+dotnet new xunit -n MyApp.Tests
+
+# Solution file
+dotnet new sln -n MySolution
+
+# Worker service (background jobs)
+dotnet new worker -n MyWorker
+
+# Blazor Server
+dotnet new blazorserver -n MyBlazorApp
+```
+
+### Listing all available templates
+
+```powershell
 dotnet new list
+```
 
-# Search for templates
-dotnet new search worker
+### Template options
 
+```powershell
 # Create without top-level statements
 dotnet new console -n MyApp --use-program-main
 
 # Target a specific framework
-dotnet new classlib -n MyLib --framework net8.0
+dotnet new console -n MyApp --framework net10.0
 
-# Force overwrite existing files
-dotnet new console -n MyApp --force
-
-# Create in a specific output directory
-dotnet new webapi -n Api -o src/Api
+# Create in the current directory
+dotnet new console --output .
 ```
-
-> **Tip:** Run `dotnet new <template> --help` to see all options for a specific template.
-> For example, `dotnet new webapi --help` shows options for authentication, controllers vs
-> minimal APIs, and more.
 
 ---
 
-## dotnet build — Compiling
+## Building — `dotnet build`
 
-```bash
-# Build the current project or solution
+```powershell
+# Default (Debug configuration)
 dotnet build
 
-# Build in Release configuration
+# Release configuration
 dotnet build -c Release
 
-# Build with detailed output
+# Build a specific project
+dotnet build src/MyApp/MyApp.csproj
+
+# Build the entire solution
+dotnet build MySolution.sln
+
+# Show detailed build output
 dotnet build -v detailed
 
-# Build a specific project
-dotnet build src/Api/Api.csproj
-
-# Set output directory
-dotnet build -o ./artifacts
-
-# Build without restoring (if already restored)
+# Build without restoring (if you already restored)
 dotnet build --no-restore
-
-# Treat warnings as errors
-dotnet build -warnaserror
 ```
 
-### Verbosity Levels
+### Verbosity levels
 
-| Level | Flag | Shows |
+| Flag | Level | Shows |
 |---|---|---|
-| Quiet | `-v q` | Errors only |
-| Minimal | `-v m` | Errors, warnings, summary |
-| Normal | `-v n` | Default output |
-| Detailed | `-v d` | Detailed build steps |
-| Diagnostic | `-v diag` | Everything (for debugging MSBuild) |
-
-> **Note:** `dotnet build` implicitly runs `dotnet restore` first. Pass `--no-restore`
-> to skip restoration when you know packages are already up to date.
+| `-v q` | Quiet | Errors only |
+| `-v m` | Minimal | Errors + warnings + summary |
+| `-v n` | Normal | Default |
+| `-v d` | Detailed | All build steps |
+| `-v diag` | Diagnostic | Everything (huge output) |
 
 ---
 
-## dotnet run — Build and Execute
+## Running — `dotnet run`
 
-```bash
-# Run the current project
+```powershell
+# Build and run the project in the current directory
 dotnet run
 
 # Run a specific project
-dotnet run --project src/Api/Api.csproj
+dotnet run --project src/MyApp
 
-# Pass arguments to your application (everything after --)
-dotnet run -- --urls "http://localhost:5000"
+# Pass arguments to your app (note the --)
+dotnet run -- --port 8080 --verbose
 
 # Run in Release mode
 dotnet run -c Release
 
-# Run without building (use existing build output)
+# Run without rebuilding
 dotnet run --no-build
-
-# Set environment variables inline
-DOTNET_ENVIRONMENT=Production dotnet run
 ```
-
-> **Important:** Arguments before `--` are for `dotnet run` itself. Arguments after `--`
-> are passed to your application. This distinction matters:
-> ```bash
-> # -c Release is for dotnet run; --seed is for your app
-> dotnet run -c Release -- --seed
-> ```
 
 ---
 
-## dotnet publish — Packaging for Deployment
+## Testing — `dotnet test`
 
-```bash
-# Framework-dependent publish (requires .NET runtime on target)
-dotnet publish -c Release
-
-# Self-contained for Linux x64
-dotnet publish -c Release -r linux-x64 --self-contained
-
-# Single-file executable
-dotnet publish -c Release -r linux-x64 --self-contained \
-  -p:PublishSingleFile=true
-
-# Single file with compression
-dotnet publish -c Release -r linux-x64 --self-contained \
-  -p:PublishSingleFile=true \
-  -p:EnableCompressionInSingleFile=true
-
-# AOT compilation (.NET 8+)
-dotnet publish -c Release -r linux-x64 \
-  -p:PublishAot=true
-
-# Trimmed and ready-to-run
-dotnet publish -c Release -r linux-x64 --self-contained \
-  -p:PublishTrimmed=true \
-  -p:PublishReadyToRun=true
-```
-
-### Common Runtime Identifiers (RIDs)
-
-| RID | Platform |
-|---|---|
-| `linux-x64` | Linux on x86-64 |
-| `linux-arm64` | Linux on ARM64 |
-| `win-x64` | Windows on x86-64 |
-| `osx-x64` | macOS on Intel |
-| `osx-arm64` | macOS on Apple Silicon |
-
-> **Warning:** Self-contained publishes produce large binaries (60+ MB) because they
-> bundle the entire .NET runtime. Use trimming to reduce size.
-
----
-
-## dotnet test — Running Tests
-
-```bash
+```powershell
 # Run all tests in the solution
 dotnet test
 
 # Run tests in a specific project
-dotnet test tests/UnitTests/UnitTests.csproj
+dotnet test tests/MyApp.Tests
 
 # Filter by test name
-dotnet test --filter "FullyQualifiedName~OrderService"
+dotnet test --filter "FullyQualifiedName~PaymentTests"
 
-# Filter by category/trait
+# Filter by trait / category
 dotnet test --filter "Category=Integration"
 
 # Run with detailed output
 dotnet test -v detailed
 
-# Run with code coverage (requires coverlet)
+# Generate code coverage (with Coverlet)
 dotnet test --collect:"XPlat Code Coverage"
 
 # Stop on first failure
-dotnet test --blame --blame-hang-timeout 60s
-
-# Run in Release configuration
-dotnet test -c Release --no-build
-
-# Generate a test results file
-dotnet test --logger "trx;LogFileName=results.trx"
+dotnet test -- RunConfiguration.StopOnFirstFailure=true
 ```
-
-### Filter Expressions
-
-```bash
-# By method name
-dotnet test --filter "Method=Should_Return_Ok"
-
-# By class
-dotnet test --filter "ClassName=OrderServiceTests"
-
-# By namespace
-dotnet test --filter "Namespace=MyApp.Tests.Unit"
-
-# Combine with operators
-dotnet test --filter "Category=Unit&ClassName=OrderServiceTests"
-dotnet test --filter "Category!=Integration"
-```
-
-> **Tip:** Add `<CollectCoverage>true</CollectCoverage>` to your test project's `.csproj`
-> if you use the `coverlet.msbuild` package. Then every `dotnet test` generates coverage.
 
 ---
 
-## dotnet format — Code Formatting
+## Publishing — `dotnet publish`
 
-```bash
-# Format the entire solution
-dotnet format
+```powershell
+# Framework-dependent (requires .NET installed on target)
+dotnet publish -c Release
 
-# Check formatting without changing files (useful in CI)
-dotnet format --verify-no-changes
+# Self-contained for Windows x64
+dotnet publish -c Release -r win-x64 --self-contained
 
-# Format only whitespace issues
-dotnet format whitespace
+# Single-file executable
+dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
 
-# Format only style issues
-dotnet format style
+# Trimmed (remove unused code)
+dotnet publish -c Release -r win-x64 --self-contained -p:PublishTrimmed=true
 
-# Format only analyzer warnings
-dotnet format analyzers --severity warn
-
-# Format a specific project
-dotnet format src/Api/Api.csproj
-
-# Include generated files
-dotnet format --include-generated
+# Native AOT (ahead-of-time compilation)
+dotnet publish -c Release -r win-x64 -p:PublishAot=true
 ```
-
-> **Note:** `dotnet format` respects your `.editorconfig` file. Make sure you have one
-> in your repository root to get consistent formatting across the team.
 
 ---
 
-## dotnet watch — Hot Reload
+## Package Management — `dotnet add/remove`
 
-```bash
-# Watch and re-run on changes
+```powershell
+# Add a NuGet package
+dotnet add package Serilog
+
+# Add a specific version
+dotnet add package Serilog --version 4.2.0
+
+# Add a project reference
+dotnet add reference ../MyLib/MyLib.csproj
+
+# Remove a package
+dotnet remove package Serilog
+
+# Remove a project reference
+dotnet remove reference ../MyLib/MyLib.csproj
+
+# List all packages in a project
+dotnet list package
+
+# Check for outdated packages
+dotnet list package --outdated
+```
+
+---
+
+## Solution Management — `dotnet sln`
+
+```powershell
+# Create a solution
+dotnet new sln -n MySolution
+
+# Add a project to the solution
+dotnet sln add src/MyApp/MyApp.csproj
+
+# Add with a solution folder
+dotnet sln add src/MyApp/MyApp.csproj --solution-folder src
+
+# List projects in the solution
+dotnet sln list
+
+# Remove a project
+dotnet sln remove src/MyApp/MyApp.csproj
+```
+
+---
+
+## Watching for Changes — `dotnet watch`
+
+`dotnet watch` monitors your source files and automatically rebuilds and restarts when you save changes. This is invaluable during development.
+
+```powershell
+# Watch and run
 dotnet watch run
 
-# Watch and re-run tests
+# Watch and run tests
 dotnet watch test
 
 # Watch a specific project
-dotnet watch --project src/Api/Api.csproj run
+dotnet watch --project src/MyApi run
 
-# Suppress browser launch
-dotnet watch run --no-hot-reload
-
-# Pass arguments through
-dotnet watch run -- --urls "http://localhost:5000"
+# Hot reload is enabled by default in .NET 10
+# Supported changes are applied without restarting
 ```
 
-The watch command supports **hot reload** for many code changes without restarting the
-application. When a change cannot be hot-reloaded, it performs a full rebuild.
+### What hot reload supports
 
-> **Tip:** For ASP.NET Core apps, `dotnet watch` automatically refreshes the browser
-> when using the default launch profile. Set `DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER=1`
-> to disable this.
+| Change Type | Hot Reload | Restart Required |
+|---|---|---|
+| Method body edits | Yes | No |
+| Add static method | Yes | No |
+| Add new class | Yes | No |
+| Change method signature | No | Yes |
+| Change inheritance | No | Yes |
 
 ---
 
-## dotnet clean — Removing Build Artifacts
+## Global and Local Tools — `dotnet tool`
 
-```bash
-# Clean the current project
-dotnet clean
+Tools are CLI extensions distributed via NuGet.
 
-# Clean Release configuration artifacts
-dotnet clean -c Release
-
-# Clean a specific project
-dotnet clean src/Api/Api.csproj
-```
-
-This removes the `bin/` and `obj/` directories' contents. It does not remove the
-directories themselves.
-
-> **Caution:** `dotnet clean` only removes output from the last build configuration.
-> If you built both Debug and Release, you need to clean both:
-> ```bash
-> dotnet clean -c Debug && dotnet clean -c Release
-> ```
-
----
-
-## dotnet tool — Managing .NET Tools
-
-```bash
+```powershell
 # Install a global tool
 dotnet tool install -g dotnet-ef
-
-# Install a specific version
-dotnet tool install -g dotnet-outdated-tool --version 4.6.0
+dotnet tool install -g dotnet-outdated-tool
 
 # Update a global tool
 dotnet tool update -g dotnet-ef
 
-# List installed global tools
+# List global tools
 dotnet tool list -g
 
-# Uninstall
-dotnet tool uninstall -g dotnet-ef
-
-# Install as a local tool (per-repo)
+# Install a local tool (project-scoped)
 dotnet new tool-manifest   # creates .config/dotnet-tools.json
 dotnet tool install dotnet-ef
 
-# Restore local tools (after cloning a repo)
+# Restore local tools (e.g., after cloning)
 dotnet tool restore
 ```
 
-### Commonly Used Tools
+### Useful global tools
 
-| Tool | Install Command | Purpose |
+| Tool | Command | Purpose |
 |---|---|---|
-| Entity Framework CLI | `dotnet tool install -g dotnet-ef` | Database migrations |
-| Outdated Checker | `dotnet tool install -g dotnet-outdated-tool` | Find outdated packages |
-| Report Generator | `dotnet tool install -g dotnet-reportgenerator-globaltool` | Coverage reports |
-| User Secrets | Built-in | Manage dev secrets |
-| HTTP REPL | `dotnet tool install -g Microsoft.dotnet-httprepl` | Test APIs |
+| EF Core CLI | `dotnet-ef` | Database migrations |
+| Outdated checker | `dotnet-outdated-tool` | Find outdated packages |
+| Format | built-in | Code formatting |
+| User secrets | built-in | Manage dev secrets |
 
 ---
 
-## dotnet restore — Package Restoration
+## Code Formatting — `dotnet format`
 
-```bash
-# Restore all packages
-dotnet restore
+```powershell
+# Format the entire solution
+dotnet format
 
-# Restore with locked mode (fail if lock file is out of date)
-dotnet restore --locked-mode
+# Check formatting without making changes
+dotnet format --verify-no-changes
 
-# Generate/update the lock file
-dotnet restore --use-lock-file
+# Format only whitespace
+dotnet format whitespace
 
-# Restore from a specific source
-dotnet restore --source https://api.nuget.org/v3/index.json
+# Format only style rules
+dotnet format style
 
-# Force re-evaluation of all dependencies
-dotnet restore --force
+# Format only analyzer rules
+dotnet format analyzers
 ```
 
-> **Important:** In CI pipelines, always use `--locked-mode` with a committed
-> `packages.lock.json` to guarantee reproducible restores.
+Configure formatting rules in `.editorconfig` at your solution root.
 
 ---
 
-## Summary
+## User Secrets — `dotnet user-secrets`
 
-The `dotnet` CLI is your all-in-one tool for .NET development on any platform. The most
-common workflow cycle is:
+User secrets store sensitive configuration (connection strings, API keys) outside your project files during development.
 
-```bash
-dotnet new console -n MyApp        # scaffold
-cd MyApp
-dotnet build                        # compile
-dotnet run                          # execute
-dotnet test                         # test
-dotnet publish -c Release           # package
+```powershell
+# Initialize secrets for a project
+dotnet user-secrets init
+
+# Set a secret
+dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost;Database=MyDb;Trusted_Connection=true"
+
+# List all secrets
+dotnet user-secrets list
+
+# Remove a secret
+dotnet user-secrets remove "ConnectionStrings:Default"
+
+# Clear all secrets
+dotnet user-secrets clear
 ```
 
-Master these commands and their flags, and you will rarely need to leave the terminal.
+Secrets are stored at `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json` and are automatically loaded in `Development` environment by the host builder.
+
+---
+
+## Useful Compound Commands
+
+```powershell
+# Clean rebuild
+dotnet clean && dotnet build
+
+# Restore, build, test in one go
+dotnet restore && dotnet build --no-restore && dotnet test --no-build
+
+# Create a project, add to solution, and add a test project
+dotnet new sln -n MyProject
+dotnet new webapi -n MyProject.Api -o src/MyProject.Api
+dotnet new xunit -n MyProject.Tests -o tests/MyProject.Tests
+dotnet sln add src/MyProject.Api tests/MyProject.Tests
+dotnet add tests/MyProject.Tests reference src/MyProject.Api
+```

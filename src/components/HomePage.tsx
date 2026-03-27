@@ -33,10 +33,10 @@ const chapterGroups: ChapterGroup[] = [
     progressColor: 'bg-accent',
   },
   {
-    label: '.NET on Ubuntu',
+    label: '.NET on Windows',
     icon: '🛠',
-    description: 'Dev environment, CLI, project structure, tooling',
-    sectionNames: ['.NET on Ubuntu'],
+    description: 'Visual Studio 2026, .NET 10 SDK, SSMS, project structure, tooling',
+    sectionNames: ['.NET on Windows'],
     color: 'text-emerald-400',
     borderColor: 'border-emerald-500/20',
     hoverBorder: 'hover:border-emerald-500/50',
@@ -241,7 +241,7 @@ export function HomePage() {
         })}
       </div>
 
-      {/* DSA Interview Prep Banner */}
+      {/* Algorithms Prep Banner */}
       {dsaPages.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -253,15 +253,15 @@ export function HomePage() {
             <div className="flex items-center gap-3">
               <Brain size={24} className="text-purple-400" />
               <div>
-                <h2 className="text-lg font-bold text-text">DSA Interview Prep</h2>
-                <p className="text-sm text-text-muted">NeetCode 150 roadmap — {dsaCount} lessons covering all major topics</p>
+                <h2 className="text-lg font-bold text-text">Algorithms Prep</h2>
+                <p className="text-sm text-text-muted">{dsaCount} lessons covering all major data structures and algorithms</p>
               </div>
             </div>
             <button
               onClick={() => dsaPages[0] && navigate(`/lesson/${dsaPages[0].slug}`)}
               className="rounded-lg bg-purple-500/20 px-4 py-2 text-sm font-medium text-purple-300 transition-colors hover:bg-purple-500/30"
             >
-              Start DSA Prep
+              Start Algorithms Prep
             </button>
           </div>
           <div className="flex items-center gap-4">

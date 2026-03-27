@@ -31,9 +31,9 @@ const chapterGroups: ChapterGroup[] = [
     ],
   },
   {
-    label: '.NET on Ubuntu',
+    label: '.NET on Windows',
     icon: '🛠',
-    sectionNames: ['.NET on Ubuntu'],
+    sectionNames: ['.NET on Windows'],
   },
   {
     label: 'Database',
@@ -66,7 +66,7 @@ const chapterGroups: ChapterGroup[] = [
     sectionNames: ['Azure for Data Engineers'],
   },
   {
-    label: 'DSA Interview Prep',
+    label: 'Algorithms Prep',
     icon: '🧠',
     sectionNames: [
       'DSA: Arrays & Hashing', 'DSA: Stack & Queue', 'DSA: Binary Search',
